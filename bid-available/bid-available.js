@@ -10,7 +10,7 @@ exports.getHook = function(datastore){
 	var bid_hook = hookio.createHook({
         name:"bid-hook",
 	});
-
+    bid_hook.setMaxListeners(2000);
     bid_hook.on('hook::ready', function(){
         bid_hook.on('*::delivery_ready',function(data){
             var driver = datastore.get('drivers',data.driver_id);
@@ -23,7 +23,7 @@ exports.getHook = function(datastore){
                     message: "Bid sent to "+flowershop.name+" at a distance of "+distance+" for delivery to "+data.delivery.addr
                 };
                 bid_hook.emit('sendSms',send_short_delivery);
-                bid_hook.emit('bid_available',driver);
+                bid_hook.emit('bid_available',{'driver':driver,'distance_from_shop':distance});
             }
             // If the driver is outside that radius, then the bid can't be processed automatically.
             else{

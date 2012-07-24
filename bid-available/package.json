@@ -3,7 +3,8 @@
   , "version": "0.0.1"
   , "private": true
   , "dependencies": {
-      "buster": "*",
-      "eventemitter2": "*"
+     "async": ">= 0.1.15"
+    , "underscore": "*"
+    , "hook.io": "*"
   }
 }

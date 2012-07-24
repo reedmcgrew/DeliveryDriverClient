@@ -24,7 +24,8 @@ var initTestHook = function(){
               coords: {lat:30.5,'long':30.5},
             },
             delivery: {
-              addr: "1101 W 200 S, Provo, UT, 84603"
+              addr: "1101 W 200 S, Provo, UT, 84603",
+              id: 23
             },
         })},5000);
     });

@@ -1,4 +1,5 @@
 var _ = require('underscore');
+
 module.exports = function(){
     var _data = {};
     return {

@@ -63,20 +63,22 @@ buster.testCase("The driver application", {
                         assert.equals(bidData,data);
                     });
                     //driver app posts rfq::bid-available to flowershop app
-                    driverApp.bus.on("*::external_event_sent", function(data){
+                    driverApp.bus.on("external_event_sent", function(data){
                         console.info("Driverapp bus just received external_event_sent");
                         //post results in 200 OK
+                        console.info(data);
                         assert.equals("rfq::bid-available", data.externalEventName);
                         assert.equals(200,data.responseCode);
-                    });
-                    //flowershop app emits external-event-received
-                    flowershopApp.bus.on("flowershopBus::bid-available", function(data){
-                        //rfq::bid-available contains driverId, driverCoords
-                        assert.equals(deliveryData,data);
-                        //driverApp.close();
-                        //flowershop.close();
                         done();
                     });
+
+                    //flowershop app emits external-event-received
+                    flowershopApp.bus.on("external-event-received", function(data){
+                        //rfq::bid-available contains driverId, driverCoords
+                        console.info("flowershop bid avail received");
+                        assert.equals(bidData,data);
+                    });
+
                     generateBidAvailableEvent(
                         bidData.deliveryId,
                         bidData.driverId,

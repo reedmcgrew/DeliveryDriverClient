@@ -26,9 +26,15 @@ exports.bootstrap = function(bootstrapDetails){
           app.use(express.errorHandler());
         });
 
+        //Application bus
+        app.bus = hookio.createHook({
+            name: 'flowershopBus',
+        });
+
         //Application routes
-        app.get('/deliveries/:id', function(req,res){
+        app.post('/deliveries/:id', function(req,res){
             res.send(200);
+            app.bus.emit('external-event-received',req.body.data);
         });
         
         //Top-level application methods
@@ -36,12 +42,6 @@ exports.bootstrap = function(bootstrapDetails){
             return "http://"+bootstrapDetails.host+":"+bootstrapDetails.port+"/"+
                 bootstrapDetails.eslBaseRoute+"/"
         };
-
-        app.bus = hookio.createHook({
-            name: 'flowershopBus',
-        });
-
-        
 
         http.createServer(app).listen(app.get('port'), function(){
             console.log("FlowershopApp server listening on port " + app.get('port'));

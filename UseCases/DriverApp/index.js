@@ -34,7 +34,7 @@ exports.bootstrap = function(bus,store,flowershopEslBase){
         app.bus = bus;
 
         //Sub Operations
-        SubOps.listenForBidAvailableEvent(app.bus); 
+        SubOps.listenForBidAvailableEvent(app.bus,flowershopEslBase); 
        
         http.createServer(app).listen(app.get('port'), function(){
             console.log("FlowershopApp server listening on port " + app.get('port'));

@@ -2,7 +2,7 @@
 
 var buster = require("buster");
 var testHook = require("./mocks/VanillaHook");
-var sharedStore = require("../lib/SharedDatabase");
+var sharedStore = require("../../lib/SharedDatabase");
 
 
 buster.testCase("The location update hook", {

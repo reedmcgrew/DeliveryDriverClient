@@ -9,8 +9,9 @@ exports.signalRemoteEvent = function(domain,name,url,data,callback){
             'data': data
         }
     };
-    request(headers, function(err,response,body){
+        console.log("Logging Url");
         console.log(url);
+    request(headers, function(err,response,body){
         callback(err,response.statusCode);
     });
 };

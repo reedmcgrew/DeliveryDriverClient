@@ -36,30 +36,76 @@ buster.testCase("The driver application", {
         done();
     },
 
-    /*"receives external rfq::delivery_ready events": function(done){
+    "receives external rfq::delivery_ready events": function(done){
+        var serverDetails = {
+            port: 4444,
+            host: "localhost"
+        };
+        
         //Bootstrap the driver app on localhost
-        var store = requireI("../../lib/Database")();
+        var store = require("../../lib/Database")();
         var bus = hookio.createHook({
             name:"recvDeliveryReady",
         });
+        bus.bootstrap = function(callback){
+            bus.on("hook::ready",function(){
+                callback();
+            });
+            bus.start();
+        };
+
         var flowershopEsl = "";
-        bootstrapDriverApplication = UseCases.bootstrapDriverApplication(bus,store,flowershopEsl);
+        bootstrapDriverApplication = UseCases.bootstrapDriverApplication(bus,store,serverDetails,flowershopEsl);
 
         //Expected Data
-        var expectedDeliveryData = {};        
+        var deliveryId = 674345351;
+        var expectedDeliveryData = {
+            delivery: {
+                id: deliveryId,
+                addr: "100 S 300 E, Benjamin, UT, 88888",
+                deliveryTime: "8pm"
+            },
+            flowershop: {
+                name: "The flowery shop",
+                coords: {'lat':70.2,'long':70.5}
+            },
+            driver: {
+                id: 22,
+                coords: {'lat':70.3,'long':70.6}
+            }
+        };
 
+        console.info("Bootstrapping delivery ready test instance.");
         bootstrapDriverApplication(function(DriverApp){
+            console.info("DELIVERY READY TEST INSTANCE DONE BOOTSTRAPPING.");
             //Listen for delivery_ready internal event
             DriverApp.bus.on("delivery_ready",function(data){
                 //Ensure that the data on the delivery_ready internal event matches that sent to the esl demuxer.
+                console.info("DATA:");
+                console.info(data);
+                assert.equals(expectedDeliveryData,data);
                 //Ensure that the delivery info is stored in the shared store.
-            assert.equal
-            //Hit the esl demuxer with a rfq::delivery_ready event and ensure that it fires off an internal delivery_ready event.
-            done();
+                assert.equals(expectedDeliveryData.delivery,DriverApp.store.get('deliveries',deliveryId));
+                done();
+            });
+            //Hit the esl demuxer with a rfq::delivery_ready event
+            var headers = {
+                method: "POST",
+                url: DriverApp.getDriverEslBase() + expectedDeliveryData.driver.id,
+                json: {
+                    '_domain': 'rfq',
+                    '_name': 'delivery_ready',
+                    'data': expectedDeliveryData
+                }
+            };
+            console.log("Driver ESL Base: " + headers.url);
+            var request = require('request');
+            request(headers, function(e,r,body){
+            });
         });
     },
 
-    "receives external rfq::bid_accepted events": function(done){
+    /*"receives external rfq::bid_accepted events": function(done){
         //Hit the esl demuxer with a bid_accepted event and ensure that it fires off an internal delivery_ready event.
         assert(false);
         done();
@@ -87,6 +133,7 @@ buster.testCase("The driver application", {
                     coords: {'lat':70.3,'long':70.6}
                 }
             };
+
             genDREvents.on("delivery_ready", function(data){
                 assert.equals(expectedData, data);
                 done();
@@ -98,13 +145,17 @@ buster.testCase("The driver application", {
     },
 
     "sends bid-available payloads to flowershop.": function(done){
+        var serverDetails = {
+            port: 5555,
+            host: "localhost"
+        };
         //driver hook mesh emits bid_available
         var bootstrapFlowershopApplication = require('./mocks/MockFlowershopApp').bootstrap(mockFlowershopDetails);
         bootstrapFlowershopApplication(function(flowershopApp){
             //Set up driver app operations
             var store = require("../../lib/Database")();
             var flowershopESL = flowershopApp.getFlowershopEslBase();
-            var bootstrapDriverApplication = UseCases.bootstrapDriverApplication(testHook,store,flowershopESL);
+            var bootstrapDriverApplication = UseCases.bootstrapDriverApplication(testHook,store,serverDetails,flowershopESL);
             bootstrapDriverApplication(function(driverApp){
                 //Set up internal bid-available operation
                 var genHook = hookio.createHook({

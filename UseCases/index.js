@@ -25,7 +25,7 @@ exports.lookupDeliveryInfo = function(datastore){
 };
 
 //Top-level operations
-exports.bootstrapDriverApplication = function(bus,store,flowershopEslBase){
+exports.bootstrapDriverApplication = function(bus,store,serverDetails,flowershopEslBase){
     var DriverApp = require('./DriverApp');
-    return DriverApp.bootstrap(bus,store,flowershopEslBase);
+    return DriverApp.bootstrap(bus,store,serverDetails,flowershopEslBase);
 };

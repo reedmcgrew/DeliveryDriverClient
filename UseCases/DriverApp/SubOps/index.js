@@ -15,6 +15,44 @@ exports.signalRemoteEvent = function(domain,name,url,data,callback){
     });
 };
 
+exports.generateDeliveryReadyEvent = function(bus){
+    return function(delivery,flowershop,driver){
+        console.info("Generating delivery ready event");
+        //delivery
+            //id
+            //addr
+            //deliveryTime
+        //flowershop
+            //name
+            //coords
+        //driver
+            //id
+            //coords
+        
+        var data = {
+            'delivery': delivery,
+            'flowershop': flowershop,
+            'driver': driver
+        };
+        bus.emit("delivery_ready",data);
+
+    };
+};
+
+//Event Operations
+exports.generateBidAvailableEvent = function(eventEmitter){
+    return function(deliveryId,driverId,driverCoords,distanceFromShop){
+        console.info("Generating bid_available event");
+        var data = {
+            'deliveryId': deliveryId,
+            'driverId': driverId,
+            'driverCoords': driverCoords,
+            'distanceFromShop': distanceFromShop
+        };
+        eventEmitter.emit("bid_available",data);
+    };
+};
+
 exports.listenForBidAvailableEvent = function(bus,eslBase){
     console.info("Adding listener for bid_available");
     bus.on("*::bid_available",function(data){

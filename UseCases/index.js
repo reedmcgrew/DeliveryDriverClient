@@ -29,18 +29,3 @@ exports.bootstrapDriverApplication = function(bus,store,flowershopEslBase){
     var DriverApp = require('./DriverApp');
     return DriverApp.bootstrap(bus,store,flowershopEslBase);
 };
-
-//Event Operations
-exports.generateBidAvailableEvent = function(eventEmitter){
-    return function(deliveryId,driverId,driverCoords,distanceFromShop){
-        console.info("Generating bid_available event");
-        var data = {
-            'deliveryId': deliveryId,
-            'driverId': driverId,
-            'driverCoords': driverCoords,
-            'distanceFromShop': distanceFromShop
-        };
-
-        eventEmitter.emit("bid_available",data);
-    };
-};

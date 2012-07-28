@@ -17,6 +17,7 @@ exports.getHook = function(datastore){
             var driver = datastore.get('drivers',data.driver_id);
             var flowershop = data.flowershop;
             var distance = geoDist(driver.coords,flowershop.coords);
+            var delivery = data.delivery;
             // If the driver is within n miles of the flower shop, submit a bid automatically to the flower shop and send the driver an SMS notification about the details of the bid.
             if(distance <= driver.bid_radius){
                 var send_short_delivery = {
@@ -24,7 +25,7 @@ exports.getHook = function(datastore){
                     message: "Bid sent to "+flowershop.name+" at a distance of "+distance+" for delivery to "+data.delivery.addr
                 };
                 bid_hook.emit('sendSms',send_short_delivery);
-                var payload = {'driver':driver,'delivery':data.delivery,'flowershop':flowershop,'distance_from_shop':distance};
+                var payload = {'driver':driver,'delivery': delivery,'flowershop':flowershop,'distance_from_shop':distance};
                 bid_hook.emit('bid-available',payload);
             }
             // If the driver is outside that radius, then the bid can't be processed automatically.
@@ -36,7 +37,7 @@ exports.getHook = function(datastore){
                     var bid_accepted = data.message.toLowerCase().indexOf("bid "+cur_delivery_num) != -1
                     if(bid_accepted && !has_fired){
                         has_fired = true;
-                        var payload = {'driver':driver,'delivery':data.delivery,'flowershop':flowershop,'distance_from_shop':distance};
+                        var payload = {'driver':driver,'delivery': delivery,'flowershop':flowershop,'distance_from_shop':distance};
                         bid_hook.emit('bid-available',payload);
                     }
                 });

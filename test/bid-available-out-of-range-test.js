@@ -21,8 +21,8 @@ buster.testCase("The bid-available hook", {
                 bid_radius: 50,
                 id: driverId },
             flowershop: shop,
-            distance_from_shop: 4111.306312644103 };
-
+            distance_from_shop: 4111.306312644103,
+            'delivery':delivery};
 
         var datastore = require('./mocks/MockDatastore')(driverCoords.lat,driverCoords.long,driverId);
         var bid_avail_hook = require('../hooks/bid-available').getHook(datastore);

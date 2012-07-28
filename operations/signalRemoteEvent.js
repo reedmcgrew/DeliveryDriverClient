@@ -17,6 +17,10 @@ var signalRemoteEvent = module.exports = function(domain,name,url,data,callback)
         }
     };
     request(headers, function(err,response,body){
+        //console.info("SIGNAL EXTERNAL EVENT RESPONSE");
+        //console.info(err);
+        //console.info(response);
+        //console.info(body);
         callback(err,response.statusCode);
     });
 };

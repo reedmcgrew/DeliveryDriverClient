@@ -36,7 +36,7 @@ Buster.testCase("The driver application", {
         done();
     },
 
-    "receives external rfq::delivery_ready events": function(done){
+    "receives external rfq::delivery-ready events": function(done){
         var serverDetails = {
             port: 4444,
             host: "localhost"
@@ -78,9 +78,9 @@ Buster.testCase("The driver application", {
         console.info("Bootstrapping delivery ready test instance.");
         bootstrapDriverApplication(function(DriverApp){
             console.info("DELIVERY READY TEST INSTANCE DONE BOOTSTRAPPING.");
-            //Listen for delivery_ready internal event
-            DriverApp.bus.on("delivery_ready",function(data){
-                //Ensure that the data on the delivery_ready internal event matches that sent to the esl demuxer.
+            //Listen for delivery-ready internal event
+            DriverApp.bus.on("delivery-ready",function(data){
+                //Ensure that the data on the delivery-ready internal event matches that sent to the esl demuxer.
                 console.info("DATA:");
                 console.info(data);
                 assert.equals(expectedDeliveryData,data);
@@ -88,13 +88,13 @@ Buster.testCase("The driver application", {
                 assert.equals(expectedDeliveryData.delivery,DriverApp.store.get('deliveries',deliveryId));
                 done();
             });
-            //Hit the esl demuxer with a rfq::delivery_ready event
+            //Hit the esl demuxer with a rfq::delivery-ready event
             var headers = {
                 method: "POST",
                 url: DriverApp.getDriverEslBase() + expectedDeliveryData.driver.id,
                 json: {
                     '_domain': 'rfq',
-                    '_name': 'delivery_ready',
+                    '_name': 'delivery-ready',
                     'data': expectedDeliveryData
                 }
             };
@@ -106,12 +106,12 @@ Buster.testCase("The driver application", {
     },
 
     /*"receives external rfq::bid_accepted events": function(done){
-        //Hit the esl demuxer with a bid_accepted event and ensure that it fires off an internal delivery_ready event.
+        //Hit the esl demuxer with a bid_accepted event and ensure that it fires off an internal delivery-ready event.
         assert(false);
         done();
     },*/
 
-    "generates internal delivery_ready events": function(done){
+    "generates internal delivery-ready events": function(done){
         var genDREvents = HookIo.createHook({
             name: "genDR"
         });
@@ -134,7 +134,7 @@ Buster.testCase("The driver application", {
                 }
             };
 
-            genDREvents.on("delivery_ready", function(data){
+            genDREvents.on("delivery-ready", function(data){
                 assert.equals(expectedData, data);
                 done();
             });
@@ -149,7 +149,7 @@ Buster.testCase("The driver application", {
             port: 5555,
             host: "localhost"
         };
-        //driver hook mesh emits bid_available
+        //driver hook mesh emits bid-available
         var bootstrapFlowershopApplication = require('./mocks/MockFlowershopApp').bootstrap(mockFlowershopDetails);
         bootstrapFlowershopApplication(function(flowershopApp){
             //Set up driver app operations
@@ -171,7 +171,7 @@ Buster.testCase("The driver application", {
                         'distanceFromShop': 56.2
                     };
                     //Test listener fixtures
-                    driverApp.bus.on("*::bid_available", function(data){
+                    driverApp.bus.on("*::bid-available", function(data){
                         assert.equals(bidData,data);
                     });
                     //driver app posts rfq::bid-available to flowershop app

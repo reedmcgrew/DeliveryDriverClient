@@ -13,7 +13,7 @@ exports.getHook = function(datastore){
 	});
     bid_hook.setMaxListeners(2000);
     bid_hook.on('hook::ready', function(){
-        bid_hook.on('*::delivery_ready',function(data){
+        bid_hook.on('*::delivery-ready',function(data){
             var driver = datastore.get('drivers',data.driver_id);
             var flowershop = data.flowershop;
             var distance = geoDist(driver.coords,flowershop.coords);

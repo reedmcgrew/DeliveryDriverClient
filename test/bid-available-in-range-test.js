@@ -47,8 +47,8 @@ buster.testCase("The bid-available hook", {
                 done();
             });
 
-            //Kick-off mock delivery_ready event
-            hook.emit('delivery_ready',{
+            //Kick-off mock delivery-ready event
+            hook.emit('delivery-ready',{
                 driver_id: driverId,
                 flowershop: shop,
                 delivery: delivery

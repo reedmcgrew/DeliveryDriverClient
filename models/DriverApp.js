@@ -45,9 +45,8 @@ exports.bootstrapDriverApplication = function(bus,store,serverDetails,flowershop
             console.info(req.body);
             var data = req.body.data;
 
-            app.store.put('deliveries',data.delivery.id,data.delivery);
-
             //Generate explicit delivery ready event
+            app.store.put('deliveries',data.delivery.id,data.delivery);
             var genDeliveryReady = require('../operations/generateDeliveryReadyEvent')(app.bus);
             genDeliveryReady(data.delivery,data.flowershop,data.driver);
         });

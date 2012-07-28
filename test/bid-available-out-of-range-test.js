@@ -45,8 +45,8 @@ buster.testCase("The bid-available hook", {
                 hook.emit('recvSms::'+data.number,{number:data.number,message:"bid "+data.deliveryNum});
             });
 
-            //Kick-off mock delivery_ready event
-            hook.emit('delivery_ready',{
+            //Kick-off mock delivery-ready event
+            hook.emit('delivery-ready',{
                 driver_id: driverId,
                 flowershop: shop,
                 delivery: delivery

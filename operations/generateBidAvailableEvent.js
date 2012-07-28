@@ -7,14 +7,14 @@
  */
 var generateBidAvailableEvent = module.exports = function(eventEmitter){
     return function(deliveryId,driverId,driverCoords,distanceFromShop){
-        console.info("Generating bid_available event");
+        console.info("Generating bid-available event");
         var data = {
             'deliveryId': deliveryId,
             'driverId': driverId,
             'driverCoords': driverCoords,
             'distanceFromShop': distanceFromShop
         };
-        eventEmitter.emit("bid_available",data);
+        eventEmitter.emit("bid-available",data);
     };
 };
 

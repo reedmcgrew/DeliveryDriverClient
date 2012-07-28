@@ -7,8 +7,8 @@
  */
 var signalRemoteEvent = require('./signalRemoteEvent');
 var listenForBidAvailableEvent = module.exports = function(bus,eslBase){
-    console.info("Adding listener for bid_available");
-    bus.on("*::bid_available",function(data){
+    console.info("Adding listener for bid-available");
+    bus.on("*::bid-available",function(data){
         var domain = 'rfq';
         var name = 'bid-available';
         var url = eslBase+data.deliveryId;

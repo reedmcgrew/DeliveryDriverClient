@@ -1,4 +1,5 @@
 // Node tests
+// TODO Convert all events to not use wildcards
 var Buster = require("buster");
 var DbOps = require("../operations/StorageOps");
 var HookIo = require("hook.io");
@@ -21,7 +22,6 @@ var expectedDeliveryInfo = {
     'driverId': driverId
 };
 
-
 //Tests
 Buster.testCase("The driver application", {
     "stores and retrieves delivery info.": function (done){
@@ -41,7 +41,7 @@ Buster.testCase("The driver application", {
             port: 4444,
             host: "localhost"
         };
-        
+
         //Bootstrap the driver app on localhost
         var store = require("../lib/Database")();
         var bus = HookIo.createHook({
@@ -69,10 +69,7 @@ Buster.testCase("The driver application", {
                 name: "The flowery shop",
                 coords: {'lat':70.2,'long':70.5}
             },
-            driver: {
-                id: 22,
-                coords: {'lat':70.3,'long':70.6}
-            }
+            driverId: 22
         };
 
         console.info("Bootstrapping delivery ready test instance.");
@@ -91,7 +88,7 @@ Buster.testCase("The driver application", {
             //Hit the esl demuxer with a rfq::delivery-ready event
             var headers = {
                 method: "POST",
-                url: DriverApp.getDriverEslBase() + expectedDeliveryData.driver.id,
+                url: DriverApp.getDriverEslBase() + expectedDeliveryData.driverId,
                 json: {
                     '_domain': 'rfq',
                     '_name': 'delivery-ready',
@@ -115,7 +112,6 @@ Buster.testCase("The driver application", {
         var genDREvents = HookIo.createHook({
             name: "genDR"
         });
-        var generateDeliveryReadyEvent = require('../operations/generateDeliveryReadyEvent')(genDREvents);
         genDREvents.on("hook::ready", function(){
 
             var expectedData = {
@@ -139,7 +135,8 @@ Buster.testCase("The driver application", {
                 done();
             });
 
-            generateDeliveryReadyEvent(expectedData.delivery,expectedData.flowershop,expectedData.driver);
+            //Fire-off delivery-ready event
+            genDREvents.emit("delivery-ready", expectedData);
         });
         genDREvents.start();
     },

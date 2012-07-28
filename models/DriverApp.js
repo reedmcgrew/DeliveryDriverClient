@@ -43,18 +43,28 @@ exports.bootstrapDriverApplication = function(bus,store,serverDetails,flowershop
         app.post('/drivers/:id', function(req,res){
             console.info("Drivers Post Received: "+req.params.id);
             console.info(req.body);
-            var data = req.body.data;
+
+            //Decode payload
+            var body = req.body.data;
+            var driverId = req.params.id;
+            var data = {
+                'delivery': body.delivery,
+                'flowershop': body.flowershop,
+                'driverId': driverId
+            };
+
+            //Pass events off to the internal bus
             var eventName = req.body._name;
             if(eventName === "delivery-ready"){
                 //Generate explicit delivery ready event
                 app.store.put('deliveries',data.delivery.id,data.delivery);
-                var genDeliveryReady = require('../operations/generateDeliveryReadyEvent')(app.bus);
-                genDeliveryReady(data.delivery,data.flowershop,data.driver);
+                app.bus.emit(eventName,data);
             }
             else if(eventName === "bid-accepted"){
-                var genBidAccepted = require('../operations/generateBidAcceptedEvent')(app.bus);
-                genBidAccepted(data.delivery,data.flowershop,data.driver);
+                app.bus.emit(eventName,data);
             }
+
+            //respond
             res.send(200);
         });
         

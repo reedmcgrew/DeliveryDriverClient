@@ -1,14 +1,21 @@
+/**
+ * Created with JetBrains WebStorm.
+ * User: reed
+ * Date: 7/28/12
+ * Time: 12:49 PM
+ * To change this template use File | Settings | File Templates.
+ */
 var buster = require("buster");
 
 buster.testCase("The bid-available hook", {
-    "responds to bid-anyway SMS messages": function(done){
+    "responds to regular in-range delivery-ready events": function(done){
         //Set up test data and fixtures
         var driverCoords = {'lat':90,'long':90}
         var driverId = 1;
         var shop = {
             name: "Hello Shop",
-            coords: {lat:30.5,'long':30.5}
-         };
+            coords: {lat:90.1,'long':90.1}
+        };
         var delivery = {
             addr: "1101 W 200 S, Provo, UT, 84603",
             id: 23
@@ -21,28 +28,28 @@ buster.testCase("The bid-available hook", {
                 bid_radius: 50,
                 id: driverId },
             flowershop: shop,
-            distance_from_shop: 4111.306312644103,
-            'delivery':delivery};
+            distance_from_shop: 6.909758508645121,
+            'delivery': delivery};
+
 
         var datastore = require('./mocks/MockDatastore')(driverCoords.lat,driverCoords.long,driverId);
-        var bid_avail_hook = require('../hooks/bid-available').getHook(datastore);
         var HookIo = require('hook.io');
         var hook = HookIo.createHook({
-            name:'testhook'
+            name:'testhook2'
         });
+        var respondWithBid = require('../operations/respondWithBid')(hook);
 
         //Listen for completed setup
         hook.on('hook::ready',function(){
-            //Listen for bid anyway option notification to the driver
-            hook.on('*::sendSms', function(data){
-                //Listen for bid-available actuation
-                hook.on('*::bid-available',function(data){
-                   assert.equals(expectedData,data);
-                   done();
-                });
+            //Listen for bid-available actuation
+            hook.on('bid-available',function(data){
+                assert.equals(expectedData,data);
+                done();
+            });
 
-                //Send mock reply from driver
-                hook.emit('recvSms::'+data.number,{number:data.number,message:"bid "+data.deliveryNum});
+            //Respond with bid when delivery ready comes in
+            hook.on('delivery-ready', function(data){
+                respondWithBid(data.delivery,data.flowershop,datastore.get('drivers',data.driverId));
             });
 
             //Kick-off mock delivery-ready event
@@ -54,8 +61,8 @@ buster.testCase("The bid-available hook", {
         });
 
         //Execute test
-        bid_avail_hook.start();
         hook.start();
     }
 });
+
 

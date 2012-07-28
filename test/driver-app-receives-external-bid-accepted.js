@@ -41,10 +41,7 @@ Buster.testCase("The driver application", {
             name: "The flowery shop",
             coords: {'lat':70.2,'long':70.5}
         },
-        driver: {
-            id: 22,
-            coords: {'lat':70.3,'long':70.6}
-        }
+        driverId: 22
     };
 
     bootstrapDriverApplication(function(DriverApp){
@@ -57,7 +54,7 @@ Buster.testCase("The driver application", {
         //Hit the esl demuxer with a rfq::delivery-ready event
         var headers = {
             method: "POST",
-            url: DriverApp.getDriverEslBase() + expectedDeliveryData.driver.id,
+            url: DriverApp.getDriverEslBase() + expectedDeliveryData.driverId,
             json: {
                 '_domain': 'rfq',
                 '_name': 'bid-accepted',

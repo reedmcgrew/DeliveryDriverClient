@@ -16,11 +16,7 @@ var signalRemoteEvent = module.exports = function(domain,name,url,data,callback)
             'data': data
         }
     };
-        console.log("Logging Url");
-        console.log(url);
     request(headers, function(err,response,body){
-        console.info("STATUS CODE:");
-        console.info(response.statusCode);
         callback(err,response.statusCode);
     });
 };

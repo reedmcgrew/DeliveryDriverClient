@@ -11,6 +11,7 @@ buster.testCase("The location update hook", {
         var dbOps = require('../operations/StorageOps');
         var lookupDriverInfo = dbOps.lookupDriverInfo(sharedStore);
         var storeDriverInfo = dbOps.storeDriverInfo(sharedStore);
+
         var locationUpdater = require("../hooks/location-update-hook").getHook(sharedStore);
         var fsid = 1001;
         var start_coords = {'lat':90.1,'long':90.1};

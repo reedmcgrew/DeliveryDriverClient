@@ -9,7 +9,7 @@ var geoDist = function(coords1,coords2){
 var delivery_num = 0;
 exports.getHook = function(datastore){	
 	var bid_hook = hookio.createHook({
-        name:"bid-hook",
+        name:"bid-hook"
 	});
     bid_hook.setMaxListeners(2000);
     bid_hook.on('hook::ready', function(){
@@ -25,7 +25,7 @@ exports.getHook = function(datastore){
                 };
                 bid_hook.emit('sendSms',send_short_delivery);
                 var payload = {'driver':driver,'delivery':data.delivery,'flowershop':flowershop,'distance_from_shop':distance};
-                bid_hook.emit('bid_available',payload);
+                bid_hook.emit('bid-available',payload);
             }
             // If the driver is outside that radius, then the bid can't be processed automatically.
             else{
@@ -33,11 +33,11 @@ exports.getHook = function(datastore){
                 var has_fired = false;
                 var cur_delivery_num = delivery_num;
                 bid_hook.once('*::recvSms::'+driver.number, function(data){
-                    var bid_accepted = data.message.toLowerCase().indexOf("bid "+cur_delivery_num) != -1 
+                    var bid_accepted = data.message.toLowerCase().indexOf("bid "+cur_delivery_num) != -1
                     if(bid_accepted && !has_fired){
                         has_fired = true;
                         var payload = {'driver':driver,'delivery':data.delivery,'flowershop':flowershop,'distance_from_shop':distance};
-                        bid_hook.emit('bid_available',payload);
+                        bid_hook.emit('bid-available',payload);
                     }
                 });
 
@@ -46,7 +46,8 @@ exports.getHook = function(datastore){
                     number: driver.number,
                     message: "Delivery request from "+flowershop.name+
                             " at a distance of "+distance+" for delivery to "+data.delivery.addr+
-                            ". Reply \"bid "+delivery_num+"\" to bid."
+                            ". Reply \"bid "+delivery_num+"\" to bid.",
+                    'deliveryNum': delivery_num
                 };
                 delivery_num++;
                 bid_hook.emit('sendSms',send_long_delivery);

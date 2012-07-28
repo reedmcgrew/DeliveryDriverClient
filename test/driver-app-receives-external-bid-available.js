@@ -5,8 +5,10 @@
  * Time: 2:03 PM
  * To change this template use File | Settings | File Templates.
  */
+Buster = require('buster');
+HookIo = require('hook.io');
 Buster.testCase("The driver application", {
-"receives external rfq::bid_accepted events": function(done){
+"receives external rfq::bid-accepted events": function(done){
     var serverDetails = {
         port: 4444,
         host: "localhost"
@@ -28,7 +30,7 @@ Buster.testCase("The driver application", {
     var bootstrapDriverApplication = require('../operations/bootstrapDriverApplication')(bus,store,serverDetails,flowershopEsl);
 
     //Expected Data
-    var deliveryId = 674345351;
+    var deliveryId = 45667431;
     var expectedDeliveryData = {
         delivery: {
             id: deliveryId,
@@ -45,17 +47,11 @@ Buster.testCase("The driver application", {
         }
     };
 
-    console.info("Bootstrapping delivery ready test instance.");
     bootstrapDriverApplication(function(DriverApp){
-        console.info("DELIVERY READY TEST INSTANCE DONE BOOTSTRAPPING.");
         //Listen for delivery-ready internal event
-        DriverApp.bus.on("delivery-ready",function(data){
+        DriverApp.bus.on("bid-accepted",function(data){
             //Ensure that the data on the delivery-ready internal event matches that sent to the esl demuxer.
-            console.info("DATA:");
-            console.info(data);
             assert.equals(expectedDeliveryData,data);
-            //Ensure that the delivery info is stored in the shared store.
-            assert.equals(expectedDeliveryData.delivery,DriverApp.store.get('deliveries',deliveryId));
             done();
         });
         //Hit the esl demuxer with a rfq::delivery-ready event
@@ -64,7 +60,7 @@ Buster.testCase("The driver application", {
             url: DriverApp.getDriverEslBase() + expectedDeliveryData.driver.id,
             json: {
                 '_domain': 'rfq',
-                '_name': 'delivery-ready',
+                '_name': 'bid-accepted',
                 'data': expectedDeliveryData
             }
         };

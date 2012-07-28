@@ -7,7 +7,7 @@
  */
 var generateDeliveryReadyEvent = module.exports = function(bus){
     return function(delivery,flowershop,driver){
-        console.info("Generating delivery ready event");
+        console.info("Generating bid accepted event");
         //delivery
         //id
         //addr
@@ -23,7 +23,7 @@ var generateDeliveryReadyEvent = module.exports = function(bus){
             'flowershop': flowershop,
             'driver': driver
         };
-        bus.emit("delivery-ready",data);
+        bus.emit("bid-accepted",data);
     };
 };
 

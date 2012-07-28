@@ -1,6 +1,6 @@
 // TODO Allow injection of bus mechanism (decouple from Hook.io)
 var geoCalc = require('./../lib/GeodesicCalculator');
-var hookio = require('hook.io');
+var HookIo = require('hook.io');
 var geoDist = function(coords1,coords2){
 	return geoCalc(coords1.lat,coords1.long,coords2.lat,coords2.long);
 };
@@ -8,7 +8,7 @@ var geoDist = function(coords1,coords2){
 
 var delivery_num = 0;
 exports.getHook = function(datastore){	
-	var bid_hook = hookio.createHook({
+	var bid_hook = HookIo.createHook({
         name:"bid-hook"
 	});
     bid_hook.setMaxListeners(2000);

@@ -1,6 +1,6 @@
 var settings = require('./settings')
-  , hookio = require('hook.io');
-var fsReceiverHook = module.exports = hookio.createHook({
+  , HookIo = require('hook.io');
+var fsReceiverHook = module.exports = HookIo.createHook({
   "name": "fsreceiverhook",
 });
 

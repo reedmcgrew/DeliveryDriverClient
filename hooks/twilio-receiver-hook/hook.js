@@ -1,6 +1,6 @@
 var settings = require('./settings')
-  , hookio = require('hook.io');
-var twilioReceiverHook = module.exports = hookio.createHook({
+  , HookIo = require('hook.io');
+var twilioReceiverHook = module.exports = HookIo.createHook({
   "name": "twilioreceiverhook",
 });
 

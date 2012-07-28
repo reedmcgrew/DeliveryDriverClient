@@ -1,5 +1,5 @@
-var hookio = require('hook.io');
-var hookB = hookio.createHook({
+var HookIo = require('hook.io');
+var hookB = HookIo.createHook({
   name: "b"
 });
 hookB.on('hook::ready', function(){

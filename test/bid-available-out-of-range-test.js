@@ -26,8 +26,8 @@ buster.testCase("The bid-available hook", {
 
         var datastore = require('./mocks/MockDatastore')(driverCoords.lat,driverCoords.long,driverId);
         var bid_avail_hook = require('../hooks/bid-available').getHook(datastore);
-        var hookio = require('hook.io');
-        var hook = hookio.createHook({
+        var HookIo = require('hook.io');
+        var hook = HookIo.createHook({
             name:'testhook'
         });
 

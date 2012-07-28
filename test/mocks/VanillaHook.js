@@ -1,5 +1,5 @@
-var hookio = require('hook.io');
-var hook = hookio.createHook({
+var HookIo = require('hook.io');
+var hook = HookIo.createHook({
     name: "vanilla-hook",
 });
 

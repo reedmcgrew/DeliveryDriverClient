@@ -4,7 +4,7 @@
 var express = require('express')
   , http = require('http')
   , path = require('path')
-  , hookio = require('hook.io');
+  , HookIo = require('hook.io');
 
 var app = express();
 
@@ -27,7 +27,7 @@ exports.bootstrap = function(bootstrapDetails){
         });
 
         //Application bus
-        app.bus = hookio.createHook({
+        app.bus = HookIo.createHook({
             name: 'flowershopBus',
         });
 

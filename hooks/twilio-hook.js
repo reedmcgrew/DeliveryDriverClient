@@ -1,4 +1,4 @@
-var hookio = require('hook.io');
+var HookIo = require('hook.io');
 var Twilio = require('../lib/Twilio');
 // TODO re-structure this hook to allow dependency injection of the hook and the Twilio library
 // TODO write a test for this module
@@ -16,7 +16,7 @@ var Twilio = require('../lib/Twilio');
 */
 exports.getHook = function(twilioOptions){
     var twilio = Twilio(twilioOptions);
-    var twiliohook = hookio.createHook({
+    var twiliohook = HookIo.createHook({
         "name": "twiliohook"
     });
 

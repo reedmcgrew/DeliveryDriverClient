@@ -3,8 +3,7 @@
  */
 var express = require('express')
   , http = require('http')
-  , path = require('path')
-  , SubOps = require('./SubOps');
+  , path = require('path');
 
 var app = express();
 
@@ -49,13 +48,13 @@ exports.bootstrapDriverApplication = function(bus,store,serverDetails,flowershop
             app.store.put('deliveries',data.delivery.id,data.delivery);
 
             //Generate explicit delivery ready event
-            var genDeliveryReady = SubOps.generateDeliveryReadyEvent(app.bus);
+            var genDeliveryReady = require('../operations/generateDeliveryReadyEvent')(app.bus);
             genDeliveryReady(data.delivery,data.flowershop,data.driver);
         });
         
 
         //Sub Operations
-        SubOps.listenForBidAvailableEvent(app.bus,flowershopEslBase); 
+        require('../operations/listenForBidAvailableEvent')(app.bus,flowershopEslBase);
        
         http.createServer(app).listen(app.get('port'), function(){
             console.log("DriverApp server listening on port " + app.get('port'));

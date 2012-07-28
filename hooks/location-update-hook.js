@@ -7,7 +7,7 @@ exports.getHook = function(datastore){
     var storeDriverInfo = dbOps.storeDriverInfo(datastore);
     var hookio = require('hook.io');
     var updaterHook = hookio.createHook({
-        name: "location-update",
+        name: "location-update"
     });
 
     updaterHook.on("hook::ready", function(){

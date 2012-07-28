@@ -1,7 +1,6 @@
 // Node tests
 var Buster = require("buster");
-var UseCases = require(".");
-var SubOps = require("./DriverApp/SubOps");
+var DbOps = require("../operations/StorageOps");
 var HookIo = require("hook.io");
 
 var testHook = require("./mocks/VanillaHook");
@@ -10,7 +9,7 @@ var testHook = require("./mocks/VanillaHook");
 var mockFlowershopDetails = {
     'port': 3000,
     'host': 'localhost',
-    'eslBaseRoute': 'deliveries',
+    'eslBaseRoute': 'deliveries'
 };
 
 var deliveryId = 102938;
@@ -27,8 +26,8 @@ var expectedDeliveryInfo = {
 Buster.testCase("The driver application", {
     "stores and retrieves delivery info.": function (done){
         var store = require("../lib/Database")();
-        var lookupDeliveryInfo = UseCases.lookupDeliveryInfo(store);
-        var storeDeliveryInfo = UseCases.storeDeliveryInfo(store);
+        var lookupDeliveryInfo = DbOps.lookupDeliveryInfo(store);
+        var storeDeliveryInfo = DbOps.storeDeliveryInfo(store);
         var beforeInfo = lookupDeliveryInfo(deliveryId);
         assert.equals(beforeInfo, null);
         storeDeliveryInfo(deliveryId, expectedDeliveryInfo);
@@ -46,7 +45,7 @@ Buster.testCase("The driver application", {
         //Bootstrap the driver app on localhost
         var store = require("../lib/Database")();
         var bus = HookIo.createHook({
-            name:"recvDeliveryReady",
+            name:"recvDeliveryReady"
         });
         bus.bootstrap = function(callback){
             bus.on("hook::ready",function(){
@@ -56,7 +55,7 @@ Buster.testCase("The driver application", {
         };
 
         var flowershopEsl = "";
-        bootstrapDriverApplication = UseCases.bootstrapDriverApplication(bus,store,serverDetails,flowershopEsl);
+        var bootstrapDriverApplication = require('../operations/bootstrapDriverApplication')(bus,store,serverDetails,flowershopEsl);
 
         //Expected Data
         var deliveryId = 674345351;
@@ -114,9 +113,9 @@ Buster.testCase("The driver application", {
 
     "generates internal delivery_ready events": function(done){
         var genDREvents = HookIo.createHook({
-            name: "genDR",
+            name: "genDR"
         });
-        var generateDeliveryReadyEvent = SubOps.generateDeliveryReadyEvent(genDREvents);
+        var generateDeliveryReadyEvent = require('../operations/generateDeliveryReadyEvent')(genDREvents);
         genDREvents.on("hook::ready", function(){
 
             var expectedData = {
@@ -151,18 +150,18 @@ Buster.testCase("The driver application", {
             host: "localhost"
         };
         //driver hook mesh emits bid_available
-        var bootstrapFlowershopApplication = require('./.').bootstrap(mockFlowershopDetails);
+        var bootstrapFlowershopApplication = require('./mocks/MockFlowershopApp').bootstrap(mockFlowershopDetails);
         bootstrapFlowershopApplication(function(flowershopApp){
             //Set up driver app operations
             var store = require("../lib/Database")();
             var flowershopESL = flowershopApp.getFlowershopEslBase();
-            var bootstrapDriverApplication = UseCases.bootstrapDriverApplication(testHook,store,serverDetails,flowershopESL);
+            var bootstrapDriverApplication = require('../operations/bootstrapDriverApplication')(testHook,store,serverDetails,flowershopESL);
             bootstrapDriverApplication(function(driverApp){
                 //Set up internal bid-available operation
                 var genHook = HookIo.createHook({
-                    name: "genHook",
+                    name: "genHook"
                 });
-                var generateBidAvailableEvent = SubOps.generateBidAvailableEvent(genHook);
+                var generateBidAvailableEvent = require('../operations/generateBidAvailableEvent')(genHook);
 
                 genHook.on("hook::ready", function(){
                     var bidData = {

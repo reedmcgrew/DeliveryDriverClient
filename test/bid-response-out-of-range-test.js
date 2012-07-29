@@ -30,7 +30,7 @@ buster.testCase("The bid-available hook", {
             name:'testhook'
         });
 
-        var respondWithBid = require('../operations/respondWithBid')(hook);
+        var respondWithBid = require('../operations/application/respondWithBid')(hook);
 
         //Listen for completed setup
         hook.on('hook::ready',function(){

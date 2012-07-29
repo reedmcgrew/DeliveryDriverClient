@@ -3,7 +3,7 @@ var Buster = require("buster");
 var DbOps = require("../operations/StorageOps");
 var HookIo = require("hook.io");
 
-var testHook = require("./mocks/VanillaHook");
+var testHook = require("./../models/VanillaHook");
 
 //Test data
 var mockFlowershopDetails = {

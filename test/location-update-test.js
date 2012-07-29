@@ -1,7 +1,7 @@
 // Node tests
 
 var buster = require("buster");
-var testHook = require("./mocks/VanillaHook");
+var testHook = require("./../models/VanillaHook");
 var sharedStore = require("../lib/SharedDatabase");
 
 

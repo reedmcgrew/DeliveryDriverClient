@@ -5,7 +5,7 @@ var geoDist = function(coords1,coords2){
 
 
 var delivery_num = 0;
-var respondWithBid = module.exports = function(bus){
+var respondWithBid = function(bus){
     return function(delivery,flowershop,driver) {
         var distance = geoDist(driver.coords,flowershop.coords);
         // If the driver is within n miles of the flower shop, submit a bid automatically to the flower shop and send the driver an SMS notification about the details of the bid.
@@ -23,8 +23,8 @@ var respondWithBid = module.exports = function(bus){
             //Intiate listener for bid response
             var has_fired = false;
             var cur_delivery_num = delivery_num;
-            bus.once('recvSms::' + driver.number, function (data) {
-                var bid_accepted = data.message.toLowerCase().indexOf("bid " + cur_delivery_num) != -1
+            bus.once('*::recvSms::' + driver.number, function (data) {
+                var bid_accepted = data.message.toLowerCase().indexOf("bid " + cur_delivery_num) != -1;
                 if (bid_accepted && !has_fired) {
                     has_fired = true;
                     var payload = {'driver':driver, 'delivery':delivery, 'flowershop':flowershop, 'distance_from_shop':distance};
@@ -44,3 +44,5 @@ var respondWithBid = module.exports = function(bus){
         }
     }
 };
+
+module.exports = respondWithBid;

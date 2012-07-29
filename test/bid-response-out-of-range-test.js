@@ -3,7 +3,7 @@ var buster = require("buster");
 buster.testCase("The bid-available hook", {
     "responds to bid-anyway SMS messages": function(done){
         //Set up test data and fixtures
-        var driverCoords = {'lat':90,'long':90}
+        var driverCoords = {'lat':90,'long':90};
         var driverId = 1;
         var shop = {
             name: "Hello Shop",
@@ -30,37 +30,44 @@ buster.testCase("The bid-available hook", {
             name:'testhook'
         });
 
+        var receiverHook = HookIo.createHook({
+            name:'mockReceiverHook'
+        });
+
         var respondWithBid = require('../operations/application/respondWithBid')(hook);
 
         //Listen for completed setup
         hook.on('hook::ready',function(){
-            //Listen for bid anyway option notification to the driver
-            hook.on('sendSms', function(data){
-                //Listen for bid-available actuation
-                hook.on('bid-available',function(data){
-                   assert.equals(expectedData,data);
-                   done();
+            receiverHook.on('hook::ready',function(){
+                //Listen for bid anyway option notification to the driver
+                hook.on('sendSms', function(data){
+                    //Listen for bid-available actuation
+                    hook.on('bid-available',function(data){
+                       assert.equals(expectedData,data);
+                       done();
+                    });
+
+                    //Send mock reply from driver
+                    receiverHook.emit('recvSms::'+data.number,{number:data.number,message:"bid "+data.deliveryNum});
                 });
 
-                //Send mock reply from driver
-                hook.emit('recvSms::'+data.number,{number:data.number,message:"bid "+data.deliveryNum});
-            });
+                //Respond with bid when delivery ready comes in
+                hook.on('delivery-ready', function(data){
+                    respondWithBid(data.delivery,data.flowershop,datastore.get('drivers',data.driverId));
+                });
 
-            //Respond with bid when delivery ready comes in
-            hook.on('delivery-ready', function(data){
-                respondWithBid(data.delivery,data.flowershop,datastore.get('drivers',data.driverId));
-            });
-
-            //Kick-off mock delivery-ready event
-            hook.emit('delivery-ready',{
-                driver_id: driverId,
-                flowershop: shop,
-                delivery: delivery
+                //Kick-off mock delivery-ready event
+                hook.emit('delivery-ready',{
+                    driver_id: driverId,
+                    flowershop: shop,
+                    delivery: delivery
+                });
             });
         });
 
         //Execute test
         hook.start();
+        receiverHook.start();
     }
 });
 

@@ -1,6 +1,6 @@
 var HookIo = require('hook.io');
 var hook = HookIo.createHook({
-    name: "vanilla-hook",
+    name: "bus"
 });
 
 hook.bootstrap = function(callback){

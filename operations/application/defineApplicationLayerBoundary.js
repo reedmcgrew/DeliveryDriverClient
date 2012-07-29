@@ -5,13 +5,13 @@
  * Time: 4:09 PM
  * To change this template use File | Settings | File Templates.
  */
-var settings = require('../settings');
+var settings = require('../../settings');
 var defineApplicationLayerBoundary = module.exports = function(bus, store, twilio){
     //Configure Sub-Operations
     fowardBidAcceptedToDriver = require('./forwardBidAcceptedToDriver')(bus,store);
     respondWithBid = require('./respondWithBid')(bus);
     sendSms = require('./sendSms')(twilio);
-    updateDriverCoords = require('./updateDriverCoords')(store);
+    updateDriverCoords = require('./../data/updateDriverCoords')(store);
 
     //Handle internal bid-accepted events
     bus.on('bid-accepted',function(data){

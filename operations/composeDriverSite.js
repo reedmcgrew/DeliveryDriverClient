@@ -24,10 +24,10 @@ var composeDriverSite = module.exports = function(twilioSender,twilioReceiver,fo
     var twilio = require('../lib/twilio')(twilioDetails);
 
     //Configure Application Layer Boundary
-    require('./defineApplicationLayerBoundary')(bus,datastore,twilio);
+    require('./application/defineApplicationLayerBoundary')(bus,datastore,twilio);
 
     //Configure web and hook components
-    var startWebLayer = require('./startDriverWebLayer')(bus,datastore,webLayerDetails,shopEslBase);
+    var startWebLayer = require('./distribution/startDriverWebLayer')(bus,datastore,webLayerDetails,shopEslBase);
     var fsReceiver = require('../hooks/foursquare-receiver-hook')(fsReceiverPort);
     var twilioReceiver = require('../hooks/twilio-receiver-hook')(twilioReceiverPort);
 

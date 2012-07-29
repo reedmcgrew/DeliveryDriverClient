@@ -70,7 +70,7 @@ exports.startDriverWebLayer = function(bus,store,serverDetails,flowershopEslBase
         
 
         //Sub Operations
-        require('../operations/listenForBidAvailableEvent')(app.bus,flowershopEslBase);
+        require('../operations/application/listenForBidAvailableEvent')(app.bus,flowershopEslBase);
        
         http.createServer(app).listen(app.get('port'), function(){
             console.log("DriverApp server listening on port " + app.get('port'));

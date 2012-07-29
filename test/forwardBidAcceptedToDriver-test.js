@@ -8,7 +8,7 @@
 
 var Buster = require('buster');
 var HookIo = require('hook.io');
-var StorageOps = require('../operations/StorageOps');
+var StorageOps = require('../operations/data/StorageOps');
 
 Buster.testCase("The forwardBidAcceptedToDriver operation",{
     "forwards bid accepted internal events to the driver via SMS": function(done){
@@ -17,7 +17,7 @@ Buster.testCase("The forwardBidAcceptedToDriver operation",{
             name:'bidAcceptedSmsListener'
         });
         var datastore = require('../lib/Database')();
-        var forwardBidAcceptedToDriver = require("../operations/forwardBidAcceptedToDriver")(bus,datastore);
+        var forwardBidAcceptedToDriver = require("../operations/application/forwardBidAcceptedToDriver")(bus,datastore);
 
         //Set up driver
         var driver = {

@@ -37,7 +37,7 @@ buster.testCase("The bid-available hook", {
         var hook = HookIo.createHook({
             name:'testhook2'
         });
-        var respondWithBid = require('../operations/respondWithBid')(hook);
+        var respondWithBid = require('../operations/application/respondWithBid')(hook);
 
         //Listen for completed setup
         hook.on('hook::ready',function(){

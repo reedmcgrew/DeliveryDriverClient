@@ -8,7 +8,7 @@
 
 var forwardBidAcceptedToDriver = module.exports = function(bus,store){
     return function(delivery,shop,driverId){
-        var lookupDriver = require('../operations/StorageOps').lookupDriverInfo(store);
+        var lookupDriver = require('../data/StorageOps').lookupDriverInfo(store);
         var driver = lookupDriver(driverId);
         var expectedData = {
             number: driver.number,

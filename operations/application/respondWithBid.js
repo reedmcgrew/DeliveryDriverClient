@@ -1,4 +1,4 @@
-var geoCalc = require('./../lib/GeodesicCalculator');
+var geoCalc = require('./../../lib/GeodesicCalculator');
 var geoDist = function(coords1,coords2){
 	return geoCalc(coords1.lat,coords1.long,coords2.lat,coords2.long);
 };

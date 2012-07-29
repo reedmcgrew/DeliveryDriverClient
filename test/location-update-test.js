@@ -8,7 +8,7 @@ var sharedStore = require("../lib/SharedDatabase");
 buster.testCase("The location update hook", {
     "inserts new coordinates": function (done) {
         //Set up data structures
-        var dbOps = require('../operations/StorageOps');
+        var dbOps = require('../operations/data/StorageOps');
         var lookupDriverInfo = dbOps.lookupDriverInfo(sharedStore);
         var storeDriverInfo = dbOps.storeDriverInfo(sharedStore);
 

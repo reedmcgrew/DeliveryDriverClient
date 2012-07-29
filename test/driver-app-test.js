@@ -1,6 +1,6 @@
 // Node tests
 var Buster = require("buster");
-var DbOps = require("../operations/StorageOps");
+var DbOps = require("../operations/data/StorageOps");
 var HookIo = require("hook.io");
 
 var testHook = require("./../models/VanillaHook");
@@ -54,7 +54,7 @@ Buster.testCase("The driver application", {
         };
 
         var flowershopEsl = "";
-        var startDriverWebLayer = require('../operations/startDriverWebLayer')(bus,store,serverDetails,flowershopEsl);
+        var startDriverWebLayer = require('../operations/distribution/startDriverWebLayer')(bus,store,serverDetails,flowershopEsl);
 
         //Expected Data
         var deliveryId = 674345351;
@@ -150,10 +150,10 @@ Buster.testCase("The driver application", {
             //Set up driver app operations
             var store = require("../lib/Database")();
             var flowershopESL = flowershopApp.getFlowershopEslBase();
-            var startDriverWebLayer = require('../operations/startDriverWebLayer')(testHook,store,serverDetails,flowershopESL);
+            var startDriverWebLayer = require('../operations/distribution/startDriverWebLayer')(testHook,store,serverDetails,flowershopESL);
             startDriverWebLayer(function(driverApp){
                 //Set up internal bid-available operation
-                var generateBidAvailableEvent = require('../operations/generateBidAvailableEvent')(driverApp.bus);
+                var generateBidAvailableEvent = require('../operations/application/generateBidAvailableEvent')(driverApp.bus);
                 var bidData = {
                     'deliveryId': deliveryId,
                     'driverId': driverId,

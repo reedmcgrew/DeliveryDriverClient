@@ -5,7 +5,7 @@
  * Time: 9:09 PM
  * To change this template use File | Settings | File Templates.
  */
-var dbOps = require("../operations/StorageOps");
+var dbOps = require("data/StorageOps");
 
 var updateDriverCoords = module.exports = function(datastore){
     var lookupDriverInfo = dbOps.lookupDriverInfo(datastore);

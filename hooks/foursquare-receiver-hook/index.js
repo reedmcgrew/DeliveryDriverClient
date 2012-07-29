@@ -1,18 +1,21 @@
 // TODO update to express version 3.0
 // Module Dependencies
 var fsReceiverHook = require('./hook');
-var webserver = require('./webserver');
-var routes = require('./routes');
+var http = require('http');
 
-// Routes
-var receiverController = routes.createReceiver(fsReceiverHook);
-webserver.post('/', receiverController);
 
 module.exports = function(port){
+    var webserver = require('./webserver')(port);
+
+    // Routes
+    var routes = require('./routes');
+    var receiverController = routes.createReceiver(fsReceiverHook);
+    webserver.post('/', receiverController);
+
     // Combine hook and server
     fsReceiverHook.on('hook::ready', function(){
-        webserver.listen(port, function(){
-            console.log("Listening on %d.", webserver.address().port, webserver.settings.env);
+        http.createServer(webserver).listen(webserver.get('port'), function(){
+            console.log("Foursquare Receiver listening on %d.", webserver.get('port'));
         });
     });
     return fsReceiverHook;

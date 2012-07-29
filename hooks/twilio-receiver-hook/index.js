@@ -1,18 +1,20 @@
 // Module Dependencies
 var twilioReceiverHook = require('./hook');
-var webserver = require('./webserver');
-var routes = require('./routes');
-
-// Routes
-var receiverController = routes.createReceiver(twilioReceiverHook);
-webserver.get('/', receiverController);
+var http = require('http');
 
 module.exports = function(port){
+    var webserver = require('./webserver')(port);
+
+    // Routes
+    var routes = require('./routes');
+    var receiverController = routes.createReceiver(twilioReceiverHook);
+    webserver.get('/', receiverController);
+
     // Combine hook and server
     twilioReceiverHook.on('hook::ready', function(){
-        webserver.listen(port, function(){
-            console.log("Listening for HTTP on %d.", webserver.address().port, webserver.settings.env);
+        http.createServer(webserver).listen(webserver.get('port'), function(){
+            console.log("Twilio receiver webserver listening on %d.", webserver.get('port'));
         });
     });
+    return twilioReceiverHook;
 };
-

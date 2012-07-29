@@ -5,7 +5,7 @@
  * Time: 7:58 PM
  * To change this template use File | Settings | File Templates.
  */
-var composeDriverSite = module.exports = function(twilioSender,twilioReceiver,foursquareReceiver){
+var composeDriverSite = module.exports = function(settings){
     //Settings
     var shopEslBase = settings.flowershopEslBase || "https://localhost:4444/deliveries/";
     var webLayerDetails = settings.webLayerDetails || {port: 5555, host: "localhost"};
@@ -38,7 +38,7 @@ var composeDriverSite = module.exports = function(twilioSender,twilioReceiver,fo
         'start': function(){
             startWebLayer(function(webLayerServer){
                 twilioReceiver.start();
-                foursquareReceiver.start();
+                fsReceiver.start();
             });
         }
     };

@@ -7,7 +7,7 @@ var express = require('express')
 
 var app = express();
 
-exports.bootstrapDriverApplication = function(bus,store,serverDetails,flowershopEslBase){
+exports.startDriverWebLayer = function(bus,store,serverDetails,flowershopEslBase){
     return function(callback){
         //Application Configuration
         app.configure(function(){

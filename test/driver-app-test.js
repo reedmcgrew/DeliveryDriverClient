@@ -1,5 +1,4 @@
 // Node tests
-// TODO Convert all events to not use wildcards
 var Buster = require("buster");
 var DbOps = require("../operations/StorageOps");
 var HookIo = require("hook.io");
@@ -55,7 +54,7 @@ Buster.testCase("The driver application", {
         };
 
         var flowershopEsl = "";
-        var bootstrapDriverApplication = require('../operations/bootstrapDriverApplication')(bus,store,serverDetails,flowershopEsl);
+        var startDriverWebLayer = require('../operations/startDriverWebLayer')(bus,store,serverDetails,flowershopEsl);
 
         //Expected Data
         var deliveryId = 674345351;
@@ -73,8 +72,7 @@ Buster.testCase("The driver application", {
         };
 
         console.info("Bootstrapping delivery ready test instance.");
-        bootstrapDriverApplication(function(DriverApp){
-            console.info("DELIVERY READY TEST INSTANCE DONE BOOTSTRAPPING.");
+        startDriverWebLayer(function(DriverApp){
             //Listen for delivery-ready internal event
             DriverApp.bus.on("delivery-ready",function(data){
                 //Ensure that the data on the delivery-ready internal event matches that sent to the esl demuxer.
@@ -152,47 +150,40 @@ Buster.testCase("The driver application", {
             //Set up driver app operations
             var store = require("../lib/Database")();
             var flowershopESL = flowershopApp.getFlowershopEslBase();
-            var bootstrapDriverApplication = require('../operations/bootstrapDriverApplication')(testHook,store,serverDetails,flowershopESL);
-            bootstrapDriverApplication(function(driverApp){
+            var startDriverWebLayer = require('../operations/startDriverWebLayer')(testHook,store,serverDetails,flowershopESL);
+            startDriverWebLayer(function(driverApp){
                 //Set up internal bid-available operation
-                var genHook = HookIo.createHook({
-                    name: "genHook"
+                var generateBidAvailableEvent = require('../operations/generateBidAvailableEvent')(driverApp.bus);
+                var bidData = {
+                    'deliveryId': deliveryId,
+                    'driverId': driverId,
+                    'driverCoords': {'lat':30.3,'long':40.2},
+                    'distanceFromShop': 56.2
+                };
+                //Test listener fixtures
+                driverApp.bus.on("bid-available", function(data){
+                    assert.equals(bidData,data);
                 });
-                var generateBidAvailableEvent = require('../operations/generateBidAvailableEvent')(genHook);
-
-                genHook.on("hook::ready", function(){
-                    var bidData = {
-                        'deliveryId': deliveryId,
-                        'driverId': driverId,
-                        'driverCoords': {'lat':30.3,'long':40.2},
-                        'distanceFromShop': 56.2
-                    };
-                    //Test listener fixtures
-                    driverApp.bus.on("*::bid-available", function(data){
-                        assert.equals(bidData,data);
-                    });
-                    //driver app posts rfq::bid-available to flowershop app
-                    driverApp.bus.on("external_event_sent", function(data){
-                        //post results in 200 OK
-                        assert.equals("rfq::bid-available", data.externalEventName);
-                        assert.equals(200,data.responseCode);
-                        done();
-                    });
-
-
-                    //flowershop app emits external-event-received
-                    flowershopApp.bus.on("external-event-received", function(data){
-                        //rfq::bid-available contains driverId, driverCoords
-                        assert.equals(bidData,data);
-                    });
-
-                    generateBidAvailableEvent(
-                        bidData.deliveryId,
-                        bidData.driverId,
-                        bidData.driverCoords,
-                        bidData.distanceFromShop);
+                //driver app posts rfq::bid-available to flowershop app
+                driverApp.bus.on("external_event_sent", function(data){
+                    //post results in 200 OK
+                    assert.equals("rfq::bid-available", data.externalEventName);
+                    assert.equals(200,data.responseCode);
+                    done();
                 });
-                genHook.start();
+
+
+                //flowershop app emits external-event-received
+                flowershopApp.bus.on("external-event-received", function(data){
+                    //rfq::bid-available contains driverId, driverCoords
+                    assert.equals(bidData,data);
+                });
+
+                generateBidAvailableEvent(
+                    bidData.deliveryId,
+                    bidData.driverId,
+                    bidData.driverCoords,
+                    bidData.distanceFromShop);
             });
         });
     }

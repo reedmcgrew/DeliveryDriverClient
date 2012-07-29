@@ -27,7 +27,7 @@ Buster.testCase("The driver application", {
     };
 
     var flowershopEsl = "";
-    var bootstrapDriverApplication = require('../operations/bootstrapDriverApplication')(bus,store,serverDetails,flowershopEsl);
+    var bootstrapDriverApplication = require('../operations/startDriverWebLayer')(bus,store,serverDetails,flowershopEsl);
 
     //Expected Data
     var deliveryId = 45667431;

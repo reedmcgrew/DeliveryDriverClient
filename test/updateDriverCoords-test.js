@@ -1,8 +1,7 @@
-// Node tests
-
 var buster = require("buster");
 var testHook = require("./../models/VanillaHook");
 var sharedStore = require("../lib/SharedDatabase");
+var HookIo = require('hook.io');
 
 
 buster.testCase("The location update hook", {
@@ -19,16 +18,22 @@ buster.testCase("The location update hook", {
         storeDriverInfo(fsid, {coords:start_coords});
 
         //Perform event-based coordinate update
+        var receiverHook = HookIo.createHook({
+           name:"receiverHook"
+        });
         testHook.on("hook::ready", function(){
-           testHook.on("foursquareUpdate", function(data){
-                updateDriverCoords(data.fsid,data.coords);
+           receiverHook.on("hook::ready", function(){
+               testHook.on("*::foursquareUpdate", function(data){
+                    updateDriverCoords(data.fsid,data.coords);
+               });
+               testHook.on("*::foursquareUpdate",function(data){
+                    assert.equals(lookupDriverInfo(fsid).coords,new_coords);
+                    done();
+                });
+                receiverHook.emit("foursquareUpdate",{'coords':new_coords,'fsid':fsid});
            });
-           testHook.on("foursquareUpdate",function(data){
-                assert.equals(lookupDriverInfo(fsid).coords,new_coords);
-                done();
-            });
-            testHook.emit("foursquareUpdate",{'coords':new_coords,'fsid':fsid});
         });
         testHook.start();
+        receiverHook.start();
     }
 });

@@ -1,4 +1,3 @@
-// TODO Update to express version 3.0
 // Set-up Web Server
 var fs = require('fs');
 var path = require('path');

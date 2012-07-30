@@ -9,7 +9,6 @@ var express = require('express')
 
 var configureWebLayer = function(app,serverDetails) {
     app.configure(function () {
-        app.set('port', process.env.PORT || serverDetails.port);
         app.set('views', __dirname + '/views');
         app.set('view engine', 'jade');
         app.use(express.favicon());
@@ -51,8 +50,8 @@ exports.DriverWebLayer = function(bus,store,serverDetails){
             return eslBase;
         },
         'run': function(callback,returnObject){
-            app.listen(app.get('port'), function(){
-                console.log("DriverApp server listening on port " + app.get('port'));
+            app.listen(serverDetails.port, function(){
+                console.log("DriverApp server listening on port " + app.address().port);
                 bus.bootstrap(function(){
                     console.info("Just bootstrapped the driver app bus!");
                     callback(returnObject);

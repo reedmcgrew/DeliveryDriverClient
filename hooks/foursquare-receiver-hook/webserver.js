@@ -10,7 +10,6 @@ module.exports = function(port){
     });
 
     webserver.configure(function(){
-      webserver.set('port', port);
       webserver.use(express.bodyParser());
       webserver.use(express.methodOverride());
       webserver.use(webserver.router);

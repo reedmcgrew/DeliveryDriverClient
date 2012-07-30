@@ -12,8 +12,8 @@ module.exports = function(port){
 
     // Combine hook and server
     twilioReceiverHook.on('hook::ready', function(){
-        http.createServer(webserver).listen(webserver.get('port'), function(){
-            console.log("Twilio receiver webserver listening on %d.", webserver.get('port'));
+        webserver.listen(port, function(){
+            console.log("Twilio receiver webserver listening on %d.", webserver.address().port);
         });
     });
     return twilioReceiverHook;

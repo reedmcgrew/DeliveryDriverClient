@@ -2,8 +2,9 @@
  * Module dependencies.
  */
 var express = require('express')
-  , http = require('http')
-  , path = require('path');
+  , https = require('https')
+  , path = require('path')
+    , fs = require('fs');
 
 
 var configureWebLayer = function(app,serverDetails) {
@@ -25,44 +26,23 @@ var configureWebLayer = function(app,serverDetails) {
 };
 
 var attachRoutes = function(app, bus, store){
+    var routes = require('../routes');
     //Application routes
-    app.get('/', function(req,res){
-        res.send('All Good!',200);
-    });
-    app.post('/drivers/:id', function(req,res){
-        console.info("Drivers Post Received: "+req.params.id);
-        console.info(req.body);
-
-        //Decode payload
-        var body = req.body.data;
-        var driverId = req.params.id;
-        var data = {
-            'delivery': body.delivery,
-            'flowershop': body.flowershop,
-            'driverId': driverId
-        };
-
-        //Pass events off to the internal bus
-        var eventName = req.body._name;
-        if(eventName === "delivery-ready"){
-            //Generate explicit delivery ready event
-            store.put('deliveries',data.delivery.id,data.delivery);
-            bus.emit(eventName,data);
-        }
-        else if(eventName === "bid-accepted"){
-            bus.emit(eventName,data);
-        }
-
-        //respond
-        res.send(200);
+    app.post('/drivers/:id', routes.driverEslHandler(bus,store));
+    //app.get('*', routes.loginHandler);
+    app.get('*', function(req,res){
+        res.send("It's all okay",200);
     });
 };
 
 exports.DriverWebLayer = function(bus,store,serverDetails){
-    var app = express();
+    var app = express.createServer({
+        key: fs.readFileSync(path.resolve(__dirname,'./ssl-dev/server.key')),
+        cert: fs.readFileSync(path.resolve(__dirname,'./ssl-dev/server.crt'))
+    });
     configureWebLayer(app,serverDetails);
     attachRoutes(app,bus,store);
-    return {'webserver':app,
+    return {'webserver': app,
         'bus': bus,
         'store': store,
         'getDriverEslBase': function () {
@@ -71,7 +51,7 @@ exports.DriverWebLayer = function(bus,store,serverDetails){
             return eslBase;
         },
         'run': function(callback,returnObject){
-            http.createServer(app).listen(app.get('port'), function(){
+            app.listen(app.get('port'), function(){
                 console.log("DriverApp server listening on port " + app.get('port'));
                 bus.bootstrap(function(){
                     console.info("Just bootstrapped the driver app bus!");

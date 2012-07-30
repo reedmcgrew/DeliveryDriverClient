@@ -10,6 +10,9 @@ module.exports = function(port){
     var routes = require('./routes');
     var receiverController = routes.createReceiver(fsReceiverHook);
     webserver.post('/', receiverController);
+    webserver.get('*', function(req,res){
+       res.send("You have reached the foursquare receiver endpoint", 200);
+    });
 
     // Combine hook and server
     fsReceiverHook.on('hook::ready', function(){

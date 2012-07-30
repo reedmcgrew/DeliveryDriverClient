@@ -14,30 +14,43 @@ exports.loginHandler = function(store,eslBase){
     }
 };
 
-exports.home = function(req, res){
-    var token = null;
-    if(req.session && req.session.accessToken)
-        token = req.session.accessToken;
-    console.log("TOKEN: " + token);
-    var logged_in = token != null ? true : false;
-    var all_users = database.getAll('users');
-    res.render('home', { 'title': "Foursquare Check",
-        'cur_id': req.session.cur_id,
-        'logged_in': logged_in,
-        'all_users': all_users,
-        'users_datastring': JSON.stringify(all_users)});
+exports.authenticate = function(Foursquare,Datastore){
+    return function(req, res){
+        Foursquare.getAccessToken({code: req.query.code}, function (error, accessToken) {
+            if(error) {
+                res.send("An error was thrown: " + error.message);
+            }
+            else {
+                // Save the accessToken and data, then redirect.
+                console.log("ACCESS TOKEN: " + accessToken);
+                console.log("ERROR: " + error);
+
+                var FoursquareClient = require('../models/FoursquareClient')(accessToken);
+                var user = require('../models/FoursquareUser')(FoursquareClient,Datastore);
+                user.getInfo(function(){
+                    req.session.accessToken = accessToken;
+                    req.session.fsid = user.getId();
+                    res.writeHead(303, { "location": "/" });
+                    res.end();
+                });
+            }
+        });
+    };
 };
 
-
-exports.connect = function(req, res, next){
-    if(req.session.accessToken == null){
-        res.writeHead(303, { "location": Foursquare.getAuthClientRedirectUrl() });
-        res.end();
-    }
-    else{
-        res.redirect("/");
-    }
-
+exports.connect = function(Foursquare){
+    return function(req, res, next){
+        console.info("trying to connect");
+        if('session' in req === false || 'accessToken' in req.session === false){
+            console.info("connecting to foursquare");
+            res.writeHead(303, { "location": Foursquare.getAuthClientRedirectUrl() });
+            res.end();
+        }
+        else{
+            console.info("already connect");
+            next();
+        }
+    };
 };
 //TODO Implement GET HTTPS Foursquare Auth Callback Handler
 //TODO Implement Foursquare Auth middleware

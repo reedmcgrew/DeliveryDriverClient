@@ -13,6 +13,8 @@ var configureWebLayer = function(app,serverDetails) {
         app.set('view engine', 'jade');
         app.use(express.favicon());
         app.use(express.logger('dev'));
+        app.use(express.cookieParser());
+        app.use(express.session({secret: "asldkjfa;sldkfbemenwjwbehrfu"}));
         app.use(express.bodyParser());
         app.use(express.methodOverride());
         app.use(app.router);
@@ -26,10 +28,11 @@ var configureWebLayer = function(app,serverDetails) {
 
 var attachRoutes = function(app, bus, store){
     var routes = require('../routes');
+    var foursquare = require('./Foursquare');
     //Application routes
     app.post('/drivers/:id', routes.driverEslHandler(bus,store));
-    //app.get('*', routes.loginHandler);
-    app.get('*', function(req,res){
+    app.get('/foursquare-callback', routes.authenticate(foursquare,store));
+    app.get('/', routes.connect(foursquare),function(req,res){
         res.send("It's all okay",200);
     });
 };

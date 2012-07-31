@@ -26,15 +26,13 @@ var configureWebLayer = function(app,serverDetails) {
 
 };
 
-var attachRoutes = function(app, bus, store){
+var attachRoutes = function(app, bus, store, eslBase){
     var routes = require('../routes');
     var foursquare = require('./Foursquare');
     //Application routes
     app.post('/drivers/:id', routes.driverEslHandler(bus,store));
     app.get('/foursquare-callback', routes.authenticate(foursquare,store));
-    app.get('/', routes.connect(foursquare),function(req,res){
-        res.send("It's all okay",200);
-    });
+    app.get('/', routes.connect(foursquare),routes.loginHandler(store, eslBase));
 };
 
 exports.DriverWebLayer = function(bus,store,serverDetails){
@@ -42,13 +40,14 @@ exports.DriverWebLayer = function(bus,store,serverDetails){
         key: fs.readFileSync(path.resolve(__dirname,'./ssl-dev/server.key')),
         cert: fs.readFileSync(path.resolve(__dirname,'./ssl-dev/server.crt'))
     });
+
+    var eslBase = "https://" + serverDetails.host + ":" + serverDetails.port + "/drivers/";
     configureWebLayer(app,serverDetails);
-    attachRoutes(app,bus,store);
+    attachRoutes(app,bus,store,eslBase);
     return {'webserver': app,
         'bus': bus,
         'store': store,
         'getDriverEslBase': function () {
-            var eslBase = "http://" + serverDetails.host + ":" + serverDetails.port + "/drivers/";
             console.info("Driver ESL Base Requested: " + eslBase);
             return eslBase;
         },

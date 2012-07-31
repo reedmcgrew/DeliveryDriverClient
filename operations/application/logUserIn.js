@@ -10,8 +10,15 @@ var LookupDriver = require('../data/StorageOps').lookupDriverInfo;
 var StoreDriver = require('../data/StorageOps').storeDriverInfo;
 module.exports = function(store){
     var lookup = LookupDriver(store);
+    var store = StoreDriver(store);
     return function(fsid){
         var driverData = lookup(fsid);
-        return driverData;
+        if(driverData === null){
+            var driverSeed = {id:fsid};
+            store('drivers',fsid,driverSeed);
+            return driverSeed;
+        } else {
+            return driverData;
+        }
     }
 };

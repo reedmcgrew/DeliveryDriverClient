@@ -34,7 +34,7 @@ var FoursquareUser = module.exports = function(client,datastore,checkins,info){
 
     return {
         'save':function(){
-            _datastore.put('users',_id,{'id':_id,
+            _datastore.put('drivers',_id,{'id':_id,
                 'checkins':_checkins,
                 'info':_info});
         },

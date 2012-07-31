@@ -52,10 +52,7 @@ exports.connect = function(Foursquare){
         }
     };
 };
-//TODO Implement GET HTTPS Foursquare Auth Callback Handler
-//TODO Implement Foursquare Auth middleware
-//TODO Implement GET displaySignupHandler
-//TODO Implement POST createAccountHandler
+
 exports.createHandler = function(store){
 
 };

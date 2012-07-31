@@ -1,0 +1,10 @@
+!!!
+html
+  head
+    title= title
+    link(rel='stylesheet', href='/stylesheets/style.css')
+  body
+    template!=body
+    if typeof(error) != "undefined" && error != ""
+        div(id="error_message")= error
+    script(src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js")

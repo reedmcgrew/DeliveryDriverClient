@@ -1,0 +1,19 @@
+div(class='landing-box')
+    h2 Create a New Account
+    form(id="signup-form",name="input",action="/create",method="post")
+        | *Name:
+        input(class="signup-field",type="text",name="user[name]")
+        br
+        | *Phone Number:
+        input(class="signup-field",type="text",name="user[number]")
+        br
+        | *Bid Radius:
+        input(class="signup-field",type="text",name="user[bidRadius]")
+        br
+        | *Latitude:
+        input(class="signup-field",type="text",name="coords[lat]")
+        br
+        | *Longitude:
+        input(class="signup-field",type="text",name="coords[long]")
+        br
+        input(class="signup-field",type="submit",value="Save Info")

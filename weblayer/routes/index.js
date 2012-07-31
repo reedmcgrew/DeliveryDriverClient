@@ -1,16 +1,38 @@
-var LoginConstructor = require('../operations/application/logUserIn');
-exports.loginHandler = function(store,eslBase){
+var LoginConstructor = require('../../operations/application/logUserIn');
+var StoreDriverConstructor = require('../../operations/data/StorageOps').storeDriverInfo;
+exports.displayEsl = function(store,eslBase){
     return function(req,res){
         //Get the foursquareId from the session
         var login = LoginConstructor(store);
         var fsid = req.session.fsid;
         var user = login(fsid);
-
-        var TEMPLATE = {
-            user: user,
-            esl: eslBase+fsid
+        if('number' in user && 'bidRadius' in user && 'coords' in user){
+            //User has provided required info. Display unique ESL
+            var esl = eslBase+fsid
+            res.send("You successfully logged in using Foursquare.  Your unique ESL is:<br><br>" + esl,200);
+        } else {
+            //User has not provided required info.  Display account creation page.
+            res.render('gatherInfo', { error: "", title: "Driver's Brokerage Site"});
         }
-        res.send(TEMPLATE,200);
+    }
+};
+
+exports.createHandler = function(store){
+    return function(req,res){
+        var data = req.body.user;
+        var storeDriver = StoreDriverConstructor(store);
+        var fsid = req.session.fsid;
+        data.id = fsid;
+        data.coords = {
+            "lat":parseFloat(req.body.coords["lat"]),
+            "long":parseFloat(req.body.coords["long"])
+        };
+        storeDriver(fsid,data);
+        res.send(req.body.user,200);
+        /*#Process Request
+         if req.body.user
+         #extract form data
+         {name,phone,bid_radius} = req.body.user*/
     }
 };
 
@@ -25,8 +47,8 @@ exports.authenticate = function(Foursquare,Datastore){
                 console.log("ACCESS TOKEN: " + accessToken);
                 console.log("ERROR: " + error);
 
-                var FoursquareClient = require('../models/FoursquareClient')(accessToken);
-                var user = require('../models/FoursquareUser')(FoursquareClient,Datastore);
+                var FoursquareClient = require('../../models/FoursquareClient')(accessToken);
+                var user = require('../../models/FoursquareUser')(FoursquareClient,Datastore);
                 user.getInfo(function(){
                     req.session.accessToken = accessToken;
                     req.session.fsid = user.getId();
@@ -51,10 +73,6 @@ exports.connect = function(Foursquare){
             next();
         }
     };
-};
-
-exports.createHandler = function(store){
-
 };
 
 exports.driverEslHandler = function(bus,store){

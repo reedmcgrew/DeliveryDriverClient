@@ -54,7 +54,7 @@ var FoursquareUser = module.exports = function(client,datastore,checkins,info){
                     "name":info["response"]["user"]["firstName"] + " " +
                         info["response"]["user"]["lastName"],
                     "id":info["response"]["user"]["id"],
-                    "pic_url":info["response"]["user"]["photo"],
+                    "pic_url":info["response"]["user"]["photo"]
                 };
 
                 _id = _info.id;
@@ -66,6 +66,6 @@ var FoursquareUser = module.exports = function(client,datastore,checkins,info){
         },
         'setDatastore':function(datastore){
             _datastore = datastore;
-        },
+        }
     }
 };

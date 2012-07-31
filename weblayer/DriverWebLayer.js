@@ -27,12 +27,14 @@ var configureWebLayer = function(app,serverDetails) {
 };
 
 var attachRoutes = function(app, bus, store, eslBase){
-    var routes = require('../routes');
-    var foursquare = require('./Foursquare');
+    var routes = require('./routes');
+    var foursquare = require('./../models/Foursquare');
+    var connect = routes.connect(foursquare);
     //Application routes
     app.post('/drivers/:id', routes.driverEslHandler(bus,store));
+    app.post('/create', connect, routes.createHandler(store));
     app.get('/foursquare-callback', routes.authenticate(foursquare,store));
-    app.get('/', routes.connect(foursquare),routes.loginHandler(store, eslBase));
+    app.get('/', connect, routes.displayEsl(store, eslBase));
 };
 
 exports.DriverWebLayer = function(bus,store,serverDetails){

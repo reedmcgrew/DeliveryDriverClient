@@ -9,6 +9,8 @@ exports.displayEsl = function(store,eslBase){
         if('number' in user && 'bidRadius' in user && 'coords' in user){
             //User has provided required info. Display unique ESL
             var esl = eslBase+fsid
+            console.info("User logged in:");
+            console.info(user);
             res.send("You successfully logged in using Foursquare.  Your unique ESL is:<br><br>" + esl,200);
         } else {
             //User has not provided required info.  Display account creation page.
@@ -28,11 +30,7 @@ exports.createHandler = function(store){
             "long":parseFloat(req.body.coords["long"])
         };
         storeDriver(fsid,data);
-        res.send(req.body.user,200);
-        /*#Process Request
-         if req.body.user
-         #extract form data
-         {name,phone,bid_radius} = req.body.user*/
+        res.redirect('/');
     }
 };
 

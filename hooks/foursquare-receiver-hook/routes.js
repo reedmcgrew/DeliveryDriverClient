@@ -10,6 +10,8 @@ exports.createReceiver = function(hook){
         var fsid = user.id;
 
         //Debug Output
+        console.log("Checkin:");
+        console.log(checkin);
         console.log("Location:");
         console.log(coords);
         console.log("User Id:");

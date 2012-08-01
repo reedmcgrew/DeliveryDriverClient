@@ -11,7 +11,7 @@ var listenForBidAvailableEvent = module.exports = function(bus,eslBase){
     bus.on("bid-available",function(data){
         var domain = 'rfq';
         var name = 'bid-available';
-        var url = eslBase+data.deliveryId;
+        var url = eslBase+data.delivery.id;
         console.info(data);
         console.info(url);
         signalRemoteEvent(domain,name,url,data,function(err, statusCode){

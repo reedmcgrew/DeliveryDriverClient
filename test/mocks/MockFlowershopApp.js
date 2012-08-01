@@ -6,13 +6,12 @@ var express = require('express')
   , path = require('path')
   , HookIo = require('hook.io');
 
-var app = express();
+var app = express.createServer();
 
 exports.bootstrap = function(bootstrapDetails){
     return function(callback){
         //Application Configuration
         app.configure(function(){
-          app.set('port', process.env.PORT || bootstrapDetails.port);
           app.set('views', __dirname + '/views');
           app.set('view engine', 'jade');
           app.use(express.favicon());
@@ -43,13 +42,13 @@ exports.bootstrap = function(bootstrapDetails){
                 bootstrapDetails.eslBaseRoute+"/"
         };
 
-        http.createServer(app).listen(app.get('port'), function(){
-            console.log("FlowershopApp server listening on port " + app.get('port'));
+        app.listen(bootstrapDetails.port, function(){
+            console.log("FlowershopApp server listening on port " + app.address().port);
             app.bus.on("hook::ready", function(){
                 console.info("FLOWERSHOP APP BUS READY");
                 callback(app);
             });
-            app.bus.start();
+            //app.bus.start();
         });
     };
 };

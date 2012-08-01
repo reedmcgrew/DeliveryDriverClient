@@ -34,7 +34,7 @@ buster.testCase("The bid-available hook", {
             name:'mockReceiverHook'
         });
 
-        var respondWithBid = require('../operations/application/respondWithBid')(hook);
+        var respondWithBid = require('../operations/application/respondWithBid')(hook,datastore);
 
         //Listen for completed setup
         hook.on('hook::ready',function(){
@@ -53,7 +53,7 @@ buster.testCase("The bid-available hook", {
 
                 //Respond with bid when delivery ready comes in
                 hook.on('delivery-ready', function(data){
-                    respondWithBid(data.delivery,data.flowershop,datastore.get('drivers',data.driverId));
+                    respondWithBid(data.delivery,data.flowershop,data.driverId);
                 });
 
                 //Kick-off mock delivery-ready event

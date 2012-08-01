@@ -17,7 +17,7 @@ module.exports = function(port){
     // Combine hook and server
     fsReceiverHook.on('hook::ready', function(){
         webserver.listen(port, function(){
-            console.log("Foursquare Receiver listening on %d.", webserver.get('port'));
+            console.log("Foursquare Receiver listening on %d.", webserver.address().port);
         });
     });
     return fsReceiverHook;

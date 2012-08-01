@@ -9,7 +9,7 @@ var settings = require('../../settings');
 var defineApplicationLayerBoundary = module.exports = function(bus, store, twilio){
     //Configure Sub-Operations
     fowardBidAcceptedToDriver = require('./forwardBidAcceptedToDriver')(bus,store);
-    respondWithBid = require('./respondWithBid')(bus);
+    respondWithBid = require('./respondWithBid')(bus,store);
     sendSms = require('./sendSms')(twilio);
     updateDriverCoords = require('./../data/updateDriverCoords')(store);
 

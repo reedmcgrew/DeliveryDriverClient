@@ -24,6 +24,7 @@ exports.createHandler = function(store){
         var data = req.body.user;
         var storeDriver = StoreDriverConstructor(store);
         var fsid = req.session.fsid;
+        data.bid_radius = parseInt(data.bidRadius);
         data.id = fsid;
         data.coords = {
             "lat":parseFloat(req.body.coords["lat"]),
@@ -80,7 +81,7 @@ exports.driverEslHandler = function(bus,store){
 
         //Decode payload
         var body = req.body.data;
-        var driverId = req.params.id;
+        var driverId = parseInt(req.params.id);
         var data = {
             'delivery': body.delivery,
             'flowershop': body.flowershop,

@@ -5,8 +5,11 @@ var geoDist = function(coords1,coords2){
 
 
 var delivery_num = 0;
-var respondWithBid = function(bus){
-    return function(delivery,flowershop,driver) {
+var respondWithBid = function(bus,store){
+    var lookupDriverInfo = require('../data/StorageOps').lookupDriverInfo(store);
+
+    return function(delivery,flowershop,driverId) {
+        var driver = lookupDriverInfo(driverId);
         var distance = geoDist(driver.coords,flowershop.coords);
         // If the driver is within n miles of the flower shop, submit a bid automatically to the flower shop and send the driver an SMS notification about the details of the bid.
         if (distance <= driver.bid_radius) {
@@ -32,11 +35,12 @@ var respondWithBid = function(bus){
                 }
             });
             //Send off SMS to driver
+            //TODO Shorten this message: the Reply part isn't getting through
             var send_long_delivery = {
                 number:driver.number,
-                message:"Delivery request from " + flowershop.name +
-                    " at a distance of " + distance + " for delivery to " + delivery.addr +
-                    ". Reply \"bid " + delivery_num + "\" to bid.",
+                message:"Shop: " + flowershop.name +
+                    "\nDistance:" + distance + "\nAddr:" + delivery.addr +
+                    "\nReply \"bid " + delivery_num + "\" to bid.",
                 'deliveryNum':delivery_num
             };
             delivery_num++;

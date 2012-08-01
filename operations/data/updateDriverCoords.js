@@ -12,6 +12,9 @@ var updateDriverCoords = module.exports = function(datastore){
     var storeDriverInfo = dbOps.storeDriverInfo(datastore);
     return function(fsid,coords){
         var driverInfo = lookupDriverInfo(fsid);
+        if(driverInfo === null){
+            driverInfo = {};
+        }
         driverInfo.coords = coords;
         storeDriverInfo(fsid,driverInfo);
     };

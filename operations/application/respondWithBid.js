@@ -28,6 +28,8 @@ var respondWithBid = function(bus,store){
             var cur_delivery_num = delivery_num;
             bus.once('*::recvSms::' + driver.number, function (data) {
                 var bid_accepted = data.message.toLowerCase().indexOf("bid " + cur_delivery_num) != -1;
+                console.info("Received a text:");
+                console.info(data);
                 if (bid_accepted && !has_fired) {
                     has_fired = true;
                     var payload = {'driver':driver, 'delivery':delivery, 'flowershop':flowershop, 'distance_from_shop':distance};

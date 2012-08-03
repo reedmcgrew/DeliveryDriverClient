@@ -78,6 +78,7 @@ exports.driverEslHandler = function(bus,store){
     return function(req,res){
         console.info("Drivers Post Received: "+req.params.id);
         console.info(req.body);
+        console.info(req.body.data.flowershop.coords);
 
         //Decode payload
         var body = req.body.data;
@@ -92,10 +93,15 @@ exports.driverEslHandler = function(bus,store){
         var eventName = req.body._name;
         if(eventName === "delivery-ready"){
             //Generate explicit delivery ready event
+            console.log("Storing delivery info");
+            console.log(data.delivery.id);
+            console.log(data.delivery);
             store.put('deliveries',data.delivery.id,data.delivery);
+            console.log("Emitting delivery ready");
             bus.emit(eventName,data);
         }
         else if(eventName === "bid-accepted"){
+            data.driverId = req.params.id
             bus.emit(eventName,data);
         }
 

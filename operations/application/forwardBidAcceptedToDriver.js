@@ -12,7 +12,7 @@ var forwardBidAcceptedToDriver = module.exports = function(bus,store){
         var driver = lookupDriver(driverId);
         var expectedData = {
             number: driver.number,
-            message: "Bid Accepted\nFlowershop Addr: "+shop.addr+"\nDelivery Addr:"+delivery.addr+"\nDelivery Time:"+delivery.deliveryTime
+            message: "Bid Accepted\nFlowershop Location: {"+shop.coords.lat+","+shop.coords["long"]+"}\nDelivery Addr:"+delivery.addr+"\nDelivery Time:"+delivery.deliveryTime
         };
         bus.emit("sendSms", expectedData);
     };

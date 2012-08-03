@@ -20,11 +20,15 @@ var defineApplicationLayerBoundary = module.exports = function(bus, store, twili
 
     //Handle internal delivery-ready events
     bus.on('delivery-ready', function(data){
+        console.info("delivery-ready received!")
+        console.info(data);
         respondWithBid(data.delivery,data.flowershop,data.driverId)
     });
 
     //Handle internal smsSends
     bus.on('sendSms', function(data){
+        console.info("I'm supposed to send this SMS message:");
+        console.info(data);
         sendSms(data.number,data.message);
     });
 
